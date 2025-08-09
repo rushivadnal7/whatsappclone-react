@@ -1,0 +1,170 @@
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useNavigate } from 'react-router-dom';
+import { fetchConversations } from '../store/slices/conversationsSlice';
+import { ArrowLeft, Plus, MoreVertical, Search, Pin } from 'lucide-react';
+import ConversationItem from '../components/ConversationItem';
+import { FaUser, FaLock, FaComments, FaBell, FaKeyboard, FaQuestionCircle, FaSignOutAlt } from 'react-icons/fa';
+import { setHomeContent } from '@/store/slices/uiSlice';
+
+
+type FilterType = 'all' | 'unread' | 'favourites' | 'groups';
+
+const HomePage: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { conversations, loading } = useAppSelector((state) => state.conversations);
+  const [filter, setFilter] = useState<FilterType>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const homeContent = useAppSelector((state) => state.ui.homeContent);
+
+
+  useEffect(() => {
+    dispatch(fetchConversations(filter));
+  }, [dispatch, filter]);
+
+  const handleConversationClick = (wa_id: string) => {
+    navigate(`/chat/${wa_id}`);
+  };
+
+  const filteredConversations = conversations.filter(conversation =>
+    conversation.contact_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    conversation.last_message.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const menuItems = [
+    { icon: <FaUser />, label: 'Account', action: () => dispatch(setHomeContent('account')) },
+    { icon: <FaLock />, label: 'Privacy' },
+    { icon: <FaComments />, label: 'Chats', action: () => dispatch(setHomeContent('chats')) },
+    { icon: <FaBell />, label: 'Notifications' },
+    { icon: <FaKeyboard />, label: 'Keyboard shortcuts' },
+    { icon: <FaQuestionCircle />, label: 'Help' },
+  ];
+
+
+  return (
+    <>
+      <div className='w-full h-full flex '>
+
+
+        <div className="flex  w-1/2 flex-col h-full bg-gray-900">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-800">
+            <h1 className="text-2xl font-bold text-white">Chats</h1>
+            <div className="flex items-center space-x-2">
+              <button className="p-2 rounded-lg hover:bg-gray-800 transition-colors">
+                <Plus className="w-5 h-5 text-gray-300" />
+              </button>
+              <button className="p-2 rounded-lg hover:bg-gray-800 transition-colors">
+                <MoreVertical className="w-5 h-5 text-gray-300" />
+              </button>
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          <div className="p-4">
+            <div className="relative">
+              <ArrowLeft className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder=""
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white placeholder-gray-400"
+              />
+            </div>
+          </div>
+
+
+          {
+            homeContent === 'chats' ? (
+              <>
+                <div className="px-4 pb-4">
+                  <div className="flex space-x-2">
+                    {(['all', 'unread', 'favourites', 'groups'] as FilterType[]).map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setFilter(tab)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filter === tab
+                          ? 'bg-green-500 text-white'
+                          : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                          }`}
+                      >
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto ">
+                  {loading ? (
+                    <div className="flex items-center justify-center h-32">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      {filteredConversations.map((conversation) => (
+                        <ConversationItem
+                          key={conversation.wa_id}
+                          conversation={conversation}
+                          onClick={() => handleConversationClick(conversation.wa_id)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-full bg-gray-900 text-white flex flex-col h-screen">
+                  {/* Profile Header */}
+                  <div className="p-4 flex items-center gap-3 border-b border-gray-700">
+                    <div
+                      // src="https://via.placeholder.com/40"
+                      // alt="Profile"
+                      className="w-10 flex items-center justify-center border h-10 rounded-full"
+                    >R</div>
+                    <div>
+                      <p className="font-semibold">Rushikesh Vadnal</p>
+                      <p className="text-sm text-gray-400">
+                        Stack your money, build your credit, have fun...
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div className="flex-1">
+                    {menuItems.map((item, idx) => (
+                      <div
+                        key={idx}
+                        onClick={item.action}
+                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-800 ${homeContent === 'account' && item.label === 'Account'}`}
+                      >
+                        <span className="text-lg">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Logout */}
+                  <div className="px-4 py-3 border-t border-gray-700 text-red-500 cursor-pointer hover:bg-gray-800 flex items-center gap-3">
+                    <FaSignOutAlt />
+                    <span>Log out</span>
+                  </div>
+                </div>
+              </>
+            )
+          }
+
+        </div>
+        <div className='w-1/2 h-full flex justify-center items-center bg-gray-800'>
+          <img className='w-1/2 h-auto' src="/whatsapp-laptop-screen.png" alt="whatsapp" />
+
+        </div>
+      </div>
+    </>
+
+  );
+};
+
+export default HomePage; 
