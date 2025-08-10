@@ -61,9 +61,8 @@ const LoginPage: React.FC = () => {
         title: "Success",
         description: "Login successful!",
       });
-    } catch (error) {
-      // Error is handled in useEffect above
-    }
+          } catch (error) {
+      }
   };
 
   return (

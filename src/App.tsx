@@ -15,7 +15,6 @@ function AppContent() {
   const { token, isAuthenticated } = store.getState().auth;
 
   useEffect(() => {
-    // Connect to WebSocket when authenticated
     if (isAuthenticated && token) {
       import('./services/socketService').then(({ socketService }) => {
         socketService.connect(token);
@@ -27,11 +26,9 @@ function AppContent() {
     <Router>
       <div className="App">
         <Routes>
-          {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           
-          {/* Protected routes */}
           <Route path="/" element={
             <ProtectedRoute>
               <Layout />

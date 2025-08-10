@@ -69,9 +69,8 @@ const RegisterPage: React.FC = () => {
         title: "Success",
         description: "Registration successful!",
       });
-    } catch (error) {
-      // Error is handled in useEffect above
-    }
+          } catch (error) {
+      }
   };
 
   return (

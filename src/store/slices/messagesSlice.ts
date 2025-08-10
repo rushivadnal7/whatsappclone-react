@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../../lib/axios";
 
 export interface Message {
   _id: string;
@@ -42,13 +42,11 @@ const initialState: MessagesState = {
   error: null,
   hasMore: {},
 };
-
-// Async thunks
 export const fetchMessages = createAsyncThunk(
   "messages/fetchMessages",
   async ({ wa_id, page = 1 }: { wa_id: string; page?: number }) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/messages/conversations/${wa_id}/messages`,
+    const response = await api.get(
+      `/api/messages/conversations/${wa_id}/messages`,
       {
         params: { page, limit: 50 },
       }
@@ -72,8 +70,8 @@ export const sendMessage = createAsyncThunk(
     text: string;
     contact_name: string;
   }) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/messages/send",
+    const response = await api.post(
+      `/api/messages/send`,
       {
         wa_id,
         text,

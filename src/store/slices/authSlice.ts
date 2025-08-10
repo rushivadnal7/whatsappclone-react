@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../lib/axios';
 
 export interface User {
   _id: string;
@@ -33,19 +33,13 @@ const initialState: AuthState = {
   loading: false,
   error: null,
 };
-
-// Async thunks
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials: { email: string; password: string }) => {
-    const response = await axios.post('http://localhost:5000/api/auth/login', credentials);
+    const response = await api.post(`/api/auth/login`, credentials);
     const { user, token } = response.data.data;
     
-    // Store token in localStorage
     localStorage.setItem('token', token);
-    
-    // Set default auth header for future requests
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     
     return { user, token };
   }
@@ -54,14 +48,10 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   'auth/register',
   async (userData: { username: string; email: string; password: string; name: string; wa_id: string }) => {
-    const response = await axios.post('http://localhost:5000/api/auth/register', userData);
+    const response = await api.post(`/api/auth/register`, userData);
     const { user, token } = response.data.data;
     
-    // Store token in localStorage
     localStorage.setItem('token', token);
-    
-    // Set default auth header for future requests
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     
     return { user, token };
   }
@@ -71,23 +61,19 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async () => {
     try {
-      await axios.post('http://localhost:5000/api/auth/logout');
+      await api.post(`/api/auth/logout`);
     } catch (error) {
       console.error('Logout error:', error);
     }
     
-    // Remove token from localStorage
     localStorage.removeItem('token');
-    
-    // Remove auth header
-    delete axios.defaults.headers.common['Authorization'];
   }
 );
 
 export const getProfile = createAsyncThunk(
   'auth/getProfile',
   async () => {
-    const response = await axios.get('http://localhost:5000/api/auth/profile');
+    const response = await api.get(`/api/auth/profile`);
     return response.data.data;
   }
 );
@@ -95,7 +81,7 @@ export const getProfile = createAsyncThunk(
 export const updateProfile = createAsyncThunk(
   'auth/updateProfile',
   async (profileData: { name?: string; status?: string; avatar?: string }) => {
-    const response = await axios.put('http://localhost:5000/api/auth/profile', profileData);
+    const response = await api.put(`/api/auth/profile`, profileData);
     return response.data.data;
   }
 );
@@ -111,20 +97,17 @@ const authSlice = createSlice({
       state.token = action.payload;
       state.isAuthenticated = true;
       localStorage.setItem('token', action.payload);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${action.payload}`;
     },
     initializeAuth: (state) => {
       const token = localStorage.getItem('token');
       if (token) {
         state.token = token;
         state.isAuthenticated = true;
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
     },
   },
   extraReducers: (builder) => {
     builder
-      // Login
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -139,7 +122,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Login failed';
       })
-      // Register
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -154,13 +136,11 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Registration failed';
       })
-      // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.token = null;
         state.isAuthenticated = false;
       })
-      // Get Profile
       .addCase(getProfile.pending, (state) => {
         state.loading = true;
       })
@@ -172,16 +152,13 @@ const authSlice = createSlice({
       .addCase(getProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to get profile';
-        // If profile fetch fails, user might be logged out
         if (action.error.message?.includes('401')) {
           state.user = null;
           state.token = null;
           state.isAuthenticated = false;
           localStorage.removeItem('token');
-          delete axios.defaults.headers.common['Authorization'];
         }
       })
-      // Update Profile
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.user = action.payload;
       });

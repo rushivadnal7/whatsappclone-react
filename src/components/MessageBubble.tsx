@@ -41,13 +41,13 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
       className={`flex ${isOutgoing ? 'justify-end' : 'justify-start'} mb-4`}
     >
       <div
-        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+        className={`max-w-[70%] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-lg ${
           isOutgoing
             ? 'bg-green-500 text-white rounded-br-none'
             : 'bg-gray-700 text-white rounded-bl-none'
         }`}
       >
-        <p className="text-sm break-words">{message.text}</p>
+        <p className="text-xs sm:text-sm break-words">{message.text}</p>
         <div className={`flex items-center justify-end space-x-1 mt-1 ${
           isOutgoing ? 'text-green-100' : 'text-gray-400'
         }`}>

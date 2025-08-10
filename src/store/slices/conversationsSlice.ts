@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../lib/axios';
 
 export interface Conversation {
   _id: string;
@@ -28,12 +28,10 @@ const initialState: ConversationsState = {
   loading: false,
   error: null,
 };
-
-// Async thunks
 export const fetchConversations = createAsyncThunk(
   'conversations/fetchConversations',
   async (filter: string = 'all') => {
-    const response = await axios.get(`http://localhost:5000/api/messages/conversations?filter=${filter}`);
+    const response = await api.get(`/api/messages/conversations?filter=${filter}`);
     return response.data.data;
   }
 );
@@ -41,7 +39,7 @@ export const fetchConversations = createAsyncThunk(
 export const fetchConversation = createAsyncThunk(
   'conversations/fetchConversation',
   async (wa_id: string) => {
-    const response = await axios.get(`http://localhost:5000/api/messages/conversations/${wa_id}`);
+    const response = await api.get(`/api/messages/conversations/${wa_id}`);
     return response.data.data;
   }
 );
@@ -49,7 +47,7 @@ export const fetchConversation = createAsyncThunk(
 export const markConversationAsRead = createAsyncThunk(
   'conversations/markConversationAsRead',
   async (wa_id: string) => {
-    await axios.put(`http://localhost:5000/api/messages/conversations/${wa_id}/read`);
+    await api.put(`/api/messages/conversations/${wa_id}/read`);
     return wa_id;
   }
 );

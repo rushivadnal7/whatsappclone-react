@@ -19,25 +19,20 @@ const ChatPage: React.FC = () => {
 
   useEffect(() => {
     if (wa_id) {
-      // Find conversation in the list
       const conversation = conversations.find(conv => conv.wa_id === wa_id);
       if (conversation) {
         dispatch(setSelectedConversation(conversation));
       } else {
-        // Fetch conversation details if not in list
         dispatch(fetchConversation(wa_id));
       }
       
-      // Fetch messages
       dispatch(fetchMessages({ wa_id }));
       
-      // Mark conversation as read
       dispatch(markConversationAsRead(wa_id));
     }
-  }, [wa_id, dispatch, conversations]);
+  }, [wa_id, dispatch]);
 
   useEffect(() => {
-    // Scroll to bottom when messages change
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, wa_id]);
 
@@ -51,7 +46,6 @@ const ChatPage: React.FC = () => {
     <div className="flex flex-col h-full">
       <ChatHeader />
       
-      {/* Messages Area */}
       <div className="flex-1 overflow-y-auto bg-gray-900 p-4">
         {loading ? (
           <div className="flex items-center justify-center h-32">

@@ -14,18 +14,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, loading, user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    // Initialize auth state from localStorage
     dispatch(initializeAuth());
   }, [dispatch]);
 
   useEffect(() => {
-    // If authenticated but no user data, fetch profile
     if (isAuthenticated && !user && !loading) {
       dispatch(getProfile());
     }
   }, [isAuthenticated, user, loading, dispatch]);
 
-  // Show loading while checking authentication
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -34,12 +31,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Show children if authenticated
   return <>{children}</>;
 };
 

@@ -2,6 +2,7 @@ import { io, Socket } from 'socket.io-client';
 import { store } from '../store';
 import { addMessage, updateConversation } from '../store/slices/messagesSlice';
 import { addConversation } from '../store/slices/conversationsSlice';
+import { BASE_URL } from '../constants';
 
 class SocketService {
   private socket: Socket | null = null;
@@ -12,7 +13,8 @@ class SocketService {
       return;
     }
 
-    this.socket = io('http://localhost:5000', {
+    const socketUrl = BASE_URL.replace('https://', 'wss://').replace('http://', 'ws://');
+    this.socket = io(socketUrl, {
       transports: ['websocket', 'polling'],
     });
 
@@ -20,7 +22,6 @@ class SocketService {
       console.log('Connected to server');
       this.isConnected = true;
       
-      // Authenticate the socket connection
       this.socket?.emit('authenticate', token);
     });
 
@@ -31,14 +32,12 @@ class SocketService {
 
     this.socket.on('auth-error', (error: string) => {
       console.error('Socket authentication error:', error);
-      // Handle authentication error (e.g., redirect to login)
     });
 
     this.socket.on('new-message', (messageData: any) => {
       console.log('New message received:', messageData);
       store.dispatch(addMessage(messageData));
       
-      // Update conversation with new message
       store.dispatch(updateConversation({
         wa_id: messageData.wa_id,
         last_message: messageData.text,
@@ -49,22 +48,18 @@ class SocketService {
 
     this.socket.on('message-received', (messageData: any) => {
       console.log('Message received notification:', messageData);
-      // Handle message received notification
     });
 
     this.socket.on('user-online', (userData: any) => {
       console.log('User online:', userData);
-      // Update user online status
     });
 
     this.socket.on('user-offline', (userData: any) => {
       console.log('User offline:', userData);
-      // Update user offline status
     });
 
     this.socket.on('user-typing', (typingData: any) => {
       console.log('User typing:', typingData);
-      // Handle typing indicators
     });
   }
 

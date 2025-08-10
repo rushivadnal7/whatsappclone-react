@@ -1,0 +1,1 @@
+export const BASE_URL = "https://whatsappclone-backend-7nky.onrender.com"

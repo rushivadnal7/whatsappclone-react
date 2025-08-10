@@ -21,7 +21,6 @@ const MessageInput: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim() && selectedConversation) {
-      // Send message via WebSocket for real-time communication
       socketService.sendMessage({
         wa_id: selectedConversation.wa_id,
         to: selectedConversation.wa_id,
@@ -29,7 +28,6 @@ const MessageInput: React.FC = () => {
         contact_name: selectedConversation.contact_name
       });
       
-      // Also send via API for persistence
       dispatch(sendMessage({
         wa_id: selectedConversation.wa_id,
         text: message.trim(),
@@ -58,21 +56,21 @@ const MessageInput: React.FC = () => {
     <motion.div
       initial={{ y: 100 }}
       animate={{ y: 0 }}
-      className="p-4 bg-gray-800 border-t border-gray-700"
+      className="p-2 sm:p-4 bg-gray-800 border-t border-gray-700"
     >
-      <form onSubmit={handleSubmit} className="flex items-end space-x-2">
+      <form onSubmit={handleSubmit} className="flex items-end space-x-1 sm:space-x-2">
         <button
           type="button"
-          className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+          className="p-1 sm:p-2 rounded-lg hover:bg-gray-700 transition-colors"
         >
-          <Smile className="w-5 h-5 text-gray-300" />
+          <Smile className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />
         </button>
         
         <button
           type="button"
-          className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+          className="p-1 sm:p-2 rounded-lg hover:bg-gray-700 transition-colors"
         >
-          <Paperclip className="w-5 h-5 text-gray-300" />
+          <Paperclip className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />
         </button>
 
         <div className="flex-1 relative">
@@ -82,7 +80,7 @@ const MessageInput: React.FC = () => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type a message"
-            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white placeholder-gray-400 resize-none max-h-32"
+            className="w-full px-3 sm:px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white placeholder-gray-400 resize-none max-h-32 text-sm sm:text-base"
             rows={1}
           />
         </div>
@@ -90,9 +88,9 @@ const MessageInput: React.FC = () => {
         <button
           type="submit"
           disabled={!message.trim()}
-          className="p-2 rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+          className="p-1 sm:p-2 rounded-lg bg-green-500 text-white hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
         >
-          <Send className="w-5 h-5" />
+          <Send className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
       </form>
     </motion.div>

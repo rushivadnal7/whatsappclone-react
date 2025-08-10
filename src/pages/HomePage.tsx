@@ -44,24 +44,21 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <div className='w-full h-full flex '>
+      <div className='w-full h-full flex flex-col lg:flex-row'>
 
-
-        <div className="flex  w-1/2 flex-col h-full bg-gray-900">
-          {/* Header */}
+        <div className="flex w-full lg:w-1/2 flex-col h-full bg-gray-900">
           <div className="flex items-center justify-between p-4 border-b border-gray-800">
-            <h1 className="text-2xl font-bold text-white">Chats</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-white">Chats</h1>
             <div className="flex items-center space-x-2">
               <button className="p-2 rounded-lg hover:bg-gray-800 transition-colors">
-                <Plus className="w-5 h-5 text-gray-300" />
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />
               </button>
               <button className="p-2 rounded-lg hover:bg-gray-800 transition-colors">
-                <MoreVertical className="w-5 h-5 text-gray-300" />
+                <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />
               </button>
             </div>
           </div>
 
-          {/* Search Bar */}
           <div className="p-4">
             <div className="relative">
               <ArrowLeft className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -80,12 +77,12 @@ const HomePage: React.FC = () => {
             homeContent === 'chats' ? (
               <>
                 <div className="px-4 pb-4">
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-1 sm:space-x-2 overflow-x-auto">
                     {(['all', 'unread', 'favourites', 'groups'] as FilterType[]).map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setFilter(tab)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filter === tab
+                        className={`px-2 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${filter === tab
                           ? 'bg-green-500 text-white'
                           : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                           }`}
@@ -117,22 +114,18 @@ const HomePage: React.FC = () => {
             ) : (
               <>
                 <div className="w-full bg-gray-900 text-white flex flex-col h-screen">
-                  {/* Profile Header */}
                   <div className="p-4 flex items-center gap-3 border-b border-gray-700">
-                    <div
-                      // src="https://via.placeholder.com/40"
-                      // alt="Profile"
-                      className="w-10 flex items-center justify-center border h-10 rounded-full"
-                    >R</div>
-                    <div>
-                      <p className="font-semibold">Rushikesh Vadnal</p>
-                      <p className="text-sm text-gray-400">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border rounded-full text-sm sm:text-base">
+                      R
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm sm:text-base truncate">Rushikesh Vadnal</p>
+                      <p className="text-xs sm:text-sm text-gray-400 truncate">
                         Stack your money, build your credit, have fun...
                       </p>
                     </div>
                   </div>
 
-                  {/* Menu Items */}
                   <div className="flex-1">
                     {menuItems.map((item, idx) => (
                       <div
@@ -140,16 +133,15 @@ const HomePage: React.FC = () => {
                         onClick={item.action}
                         className={`flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-800 ${homeContent === 'account' && item.label === 'Account'}`}
                       >
-                        <span className="text-lg">{item.icon}</span>
-                        <span>{item.label}</span>
+                        <span className="text-base sm:text-lg">{item.icon}</span>
+                        <span className="text-sm sm:text-base">{item.label}</span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Logout */}
                   <div className="px-4 py-3 border-t border-gray-700 text-red-500 cursor-pointer hover:bg-gray-800 flex items-center gap-3">
-                    <FaSignOutAlt />
-                    <span>Log out</span>
+                    <FaSignOutAlt className="text-base sm:text-lg" />
+                    <span className="text-sm sm:text-base">Log out</span>
                   </div>
                 </div>
               </>
@@ -157,9 +149,8 @@ const HomePage: React.FC = () => {
           }
 
         </div>
-        <div className='w-1/2 h-full flex justify-center items-center bg-gray-800'>
+        <div className='hidden lg:flex w-1/2 h-full justify-center items-center bg-gray-800'>
           <img className='w-1/2 h-auto' src="/whatsapp-laptop-screen.png" alt="whatsapp" />
-
         </div>
       </div>
     </>

@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LogOut, User } from 'lucide-react';
 import Sidebar from './Sidebar';
+import MobileNav from './MobileNav';
 import { Button } from './ui/button';
 import { logout } from '../store/slices/authSlice';
 import type { RootState, AppDispatch } from '../store';
@@ -17,10 +18,8 @@ const Layout: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      // Disconnect WebSocket
       socketService.disconnect();
       
-      // Logout from server
       await dispatch(logout()).unwrap();
       
       toast({
@@ -36,18 +35,16 @@ const Layout: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-900">
-      {/* Fixed Sidebar - always visible */}
-      <div className="w-20 bg-gray-800 flex-shrink-0 flex flex-col items-center py-4">
+      <div className="hidden md:flex w-20 bg-gray-800 flex-shrink-0 flex flex-col items-center py-4">
         <Sidebar />
         
-        {/* User profile and logout */}
         <div className="mt-auto space-y-2">
           {user && (
             <div className="flex flex-col items-center">
               <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
                 {user.profile.name.charAt(0).toUpperCase()}
               </div>
-              <span className="text-xs text-gray-400 mt-1 text-center">
+              <span className="text-xs text-gray-400 mt-1 text-center hidden lg:block">
                 {user.profile.name}
               </span>
             </div>
@@ -65,10 +62,10 @@ const Layout: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col bg-gray-900">
+      <div className="flex-1 flex flex-col bg-gray-900 pb-16 md:pb-0 safe-area-bottom">
         <Outlet />
       </div>
+      <MobileNav />
     </div>
   );
 };
