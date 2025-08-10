@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Target, 
-  MessageCircle, 
-  Users, 
-  Phone, 
+import {
+  Target,
+  MessageCircle,
+  Users,
+  Phone,
   Settings,
   User
 } from 'lucide-react';
@@ -20,22 +20,31 @@ const MobileNav: React.FC = () => {
     return location.pathname === path;
   };
 
+  const [isChatScreen, setIsChatScreen] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setIsChatScreen(location.pathname.includes('chat'));
+  }, [location.pathname]);
+
+  if (isChatScreen === null) {
+    return null; 
+  }
+
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 z-50 safe-area-bottom">
+    <div className="md:hidden h-[80px] fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 z-50 safe-area-bottom">
       <div className="flex justify-around items-center py-2">
         <button
           onClick={() => navigate('/')}
-          className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-            isActive('/') 
-              ? 'text-green-500' 
+          className={`flex flex-col items-center p-2 rounded-lg transition-colors ${isActive('/')
+              ? 'text-green-500'
               : 'text-gray-400 hover:text-white'
-          }`}
+            }`}
         >
           <Target className="w-5 h-5 mb-1" />
           <span className="text-xs">Chats</span>
         </button>
 
-        <button 
+        <button
           onClick={() => dispatch(setHomeContent('chats'))}
           className="flex flex-col items-center p-2 rounded-lg text-gray-400 hover:text-white transition-colors"
         >
@@ -43,7 +52,7 @@ const MobileNav: React.FC = () => {
           <span className="text-xs">Messages</span>
         </button>
 
-        <button 
+        <button
           onClick={() => dispatch(setHomeContent('account'))}
           className="flex flex-col items-center p-2 rounded-lg text-gray-400 hover:text-white transition-colors"
         >

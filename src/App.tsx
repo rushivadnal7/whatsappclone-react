@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { store } from './store';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
@@ -12,7 +12,7 @@ import { Toaster } from './components/ui/toaster';
 import './App.css';
 
 function AppContent() {
-  const { token, isAuthenticated } = store.getState().auth;
+  const { token, isAuthenticated } = useSelector((state: any) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated && token) {

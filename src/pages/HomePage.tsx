@@ -19,7 +19,11 @@ const HomePage: React.FC = () => {
   const homeContent = useAppSelector((state) => state.ui.homeContent);
 
 
+  console.log(conversations);
+
+
   useEffect(() => {
+    console.log('Fetching conversations with filter:', filter);
     dispatch(fetchConversations(filter));
   }, [dispatch, filter]);
 

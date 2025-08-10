@@ -35,8 +35,9 @@ const ConversationItem: React.FC<ConversationItemProps> = ({ conversation, onCli
     return name.split(' ').map(word => word.charAt(0)).join('').toUpperCase().slice(0, 2);
   };
 
-  const isPinned = Math.random() > 0.7;
-  const isRead = Math.random() > 0.3;
+  // Use stable values based on conversation data instead of random
+  const isPinned = conversation.wa_id.length % 3 === 0; // Stable based on wa_id
+  const isRead = conversation.unread_count === 0; // Use actual unread count
 
   return (
     <div

@@ -2,7 +2,7 @@ import { io, Socket } from 'socket.io-client';
 import { store } from '../store';
 import { addMessage, updateConversation } from '../store/slices/messagesSlice';
 import { addConversation } from '../store/slices/conversationsSlice';
-import { BASE_URL } from '../constants';
+import { SOCKET_URL } from '../constants';
 
 class SocketService {
   private socket: Socket | null = null;
@@ -13,7 +13,7 @@ class SocketService {
       return;
     }
 
-    const socketUrl = BASE_URL.replace('https://', 'wss://').replace('http://', 'ws://');
+    const socketUrl = SOCKET_URL.replace('https://', 'wss://').replace('http://', 'ws://');
     this.socket = io(socketUrl, {
       transports: ['websocket', 'polling'],
     });
